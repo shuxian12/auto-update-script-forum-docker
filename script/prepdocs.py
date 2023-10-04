@@ -25,6 +25,7 @@ from azure.storage.blob import BlobServiceClient
 from text_spliter import split_md
 
 MAX_SECTION_LENGTH = 1000
+MIN_SECTION_LENGTH = 376
 # SENTENCE_SEARCH_LIMIT = 100
 # SECTION_OVERLAP = 100
 
@@ -69,7 +70,9 @@ def remove_blobs(filename):
 def get_document_text(filename: str, remove_img: bool, remove_href: bool) -> str | None:
     if filename.endswith(".md"):
         doc = open(filename, "r", encoding='utf-8').read()
-
+        if len(doc) < MIN_SECTION_LENGTH:
+            return None
+        
         # Dealing with table spaces and dashes in markdown
         while doc.find('----') != -1:
             doc = doc.replace('----', '-')
@@ -141,8 +144,8 @@ def create_search_index():
     else:
         if args.verbose: print(f"* Search index {args.index} already exists")
 
-def index_sections(filename, sections):
-    if args.verbose: print(f"+ Indexing sections from '{filename}' into search index '{args.index}'")
+def index_sections(filename, sections, bar: tqdm.tqdm):
+    if args.verbose: bar.set_postfix_str(f"+ Indexing sections from '{filename}'")
     search_client = SearchClient(endpoint=f"https://{args.searchservice}.search.windows.net/",
                                  index_name=args.index,
                                  credential=search_creds)
@@ -154,16 +157,16 @@ def index_sections(filename, sections):
         if i % 1000 == 0:
             results = search_client.upload_documents(documents=batch)
             succeeded = sum([1 for r in results if r.succeeded])
-            if args.verbose: print(f"\tIndexed {len(results)} sections, {succeeded} succeeded")
+            if args.verbose and len(results) != succeeded: bar.set_postfix_str(f"{filename}: Indexed {len(results)} sections, {succeeded} succeeded")
             batch = []
 
     if len(batch) > 0:
         results = search_client.upload_documents(documents=batch)
         succeeded = sum([1 for r in results if r.succeeded])
-        if args.verbose: print(f"\tIndexed {len(results)} sections, {succeeded} succeeded")
+        if args.verbose and len(results) != succeeded: bar.set_postfix_str(f"{filename}: Indexed {len(results)} sections, {succeeded} succeeded")
 
 def remove_from_index(filename):
-    if args.verbose: print(f"!! Removing sections from '{filename or '<all>'}' from search index '{args.index}'")
+    if args.verbose: bar.set_postfix_str(f"!! Removing sections from '{filename or '<all>'}' from search index '{args.index}'")
     search_client = SearchClient(endpoint=f"https://{args.searchservice}.search.windows.net/",
                                     index_name=args.index,
                                     credential=search_creds)
@@ -171,10 +174,10 @@ def remove_from_index(filename):
         filter = None if filename == None else f"sourcefile eq '{os.path.basename(filename)}'"
         r = search_client.search("", filter=filter, top=1000, include_total_count=True)
         if r.get_count() == 0:
-            if args.verbose: print(f"\tNo more sections found in index")
+            if args.verbose: bar.set_postfix_str(f"\tNo more sections found in index")
             break
         r = search_client.delete_documents(documents=[{ "id": d["id"] } for d in r])
-        if args.verbose: print(f"\tRemoved {len(r)} sections from index")
+        if args.verbose: bar.set_postfix_str(f"\tRemoved {len(r)} sections from index")
         # It can take a few seconds for search results to reflect changes, so wait a bit
         time.sleep(2)
 
@@ -227,39 +230,51 @@ if __name__ == "__main__":
     if args.removeall:
         remove_blobs(None)
         remove_from_index(None)
-    else:
-    # if True:
-        if not args.remove:
-            create_search_index()
-        
-        t = sum([len(glob.glob(f)) for f in files])
-        if args.verbose: print(f"* Total have {t} files to process")
+        exit(0)
 
-        print(f"* Processing ...")
-        for folder in files:
-            folder_file_sum = len(glob.glob(folder))
-            print(f"* Processing folder: {folder}, total files: {folder_file_sum}")
-            if folder_file_sum == 0:
-                print(f"- Folder {folder} is empty")
-                continue
+    if not args.remove:
+        create_search_index()
+    
+    t = sum([len(glob.glob(f)) for f in files])
+    if args.verbose: print(f"* Total have {t} files to process")
 
-            for filename in tqdm.tqdm(glob.glob(folder)):
-                # if args.verbose: print(f"Processing '{filename}'")
-                if args.remove:
-                    remove_blobs(filename)
-                    remove_from_index(filename)
-                elif args.remove_index:
-                    remove_from_index(filename)
-                elif args.remove_blobs:
-                    remove_blobs(filename)
+    print(f"* Processing ...")
+    short, total = 0, 0
+    for folder in files:
+        # file_list = [f for f in glob.glob(folder) if 'Release_note' not in f] # remove Release_note
+        file_list = glob.glob(folder)
+        folder_file_sum = len(file_list)
+        total += folder_file_sum
+
+        print(f"* Processing folder: {('/').join(folder.split('/')[-3:])}, total files: {folder_file_sum}")
+        if folder_file_sum == 0:
+            print(f"- Folder {folder} is empty")
+            continue
+
+        for filename in (bar := tqdm.tqdm(file_list, bar_format='{l_bar}{bar:30}{r_bar}{bar:-10b}')):
+            # if args.verbose: print(f"Processing '{filename}'")
+            if args.remove:
+                remove_blobs(filename)
+                remove_from_index(filename)
+            elif args.remove_index:
+                remove_from_index(filename)
+            elif args.remove_blobs:
+                remove_blobs(filename)
+            else:
+                page_map = get_document_text(filename, args.remove_image, args.remove_href)
+                if page_map == None:
+                    short += 1
+                    if args.verbose: print(f"\tSkipping short document '{('/').join(filename.split('/')[-4:])}'")
+                    continue
+                sections = create_sections(os.path.basename(filename), page_map)
+
+                if args.test:
+                    if not os.path.exists("test"):  os.mkdir("test")
+                    with open(f'test/md_{filename.split("/")[-1].split(".")[0]}.json', 'w', encoding='utf-8') as f:
+                        f.write(json.dumps([s for s in sections], indent=4, ensure_ascii=False))    
                 else:
+                    index_sections(os.path.basename(filename), sections, bar)
                     if not args.skipblobs:
                         upload_blobs(filename)
-                    page_map = get_document_text(filename, args.remove_image, args.remove_href)
-                    sections = create_sections(os.path.basename(filename), page_map)
-                    if args.test:
-                        if not os.path.exists("test"):  os.mkdir("test")
-                        with open(f'test/md_{filename.split("/")[-1].split(".")[0]}.json', 'w', encoding='utf-8') as f:
-                            f.write(json.dumps([s for s in sections], indent=4, ensure_ascii=False))
-                    else:
-                        index_sections(os.path.basename(filename), sections)
+
+    if args.verbose: print(f"* Done, {short} short documents skipped, and {total} files processed")

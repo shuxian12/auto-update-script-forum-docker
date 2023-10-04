@@ -45,5 +45,7 @@ done < ../.env
 
 echo 'Run "prepdocs.py", and start to upload index to Azure Portal'
 # python prepdocs.py '../md/*' --searchservice "$AZURE_SEARCH_SERVICE" --index "$AZURE_SEARCH_INDEX" --tenantid "$TENANT_ID" --searchkey "$AZURE_KEY_CREDENTIAL" --skipblobs --remove_image -v
-python prepdocs.py "$DATA_PATH" --searchservice "$AZURE_SEARCH_SERVICE" --index "$AZURE_SEARCH_INDEX" --tenantid "$TENANT_ID" --searchkey "$AZURE_KEY_CREDENTIAL" --storageaccount "$AZURE_STORAGE_ACCOUNT" --container "$AZURE_STORAGE_CONTAINER" --storagekey "$AZURE_STORAGE_KEY" --tenantid "$TTENANT_ID" -v --remove_image --remove_href --test
+DATE=$(date +'%Y-%m-%d_%H:%M:%S')
+FOLDER=$(basename "$DATA_PATH")
+python prepdocs.py "$DATA_PATH" --searchservice "$AZURE_SEARCH_SERVICE" --index "$AZURE_SEARCH_INDEX" --tenantid "$TENANT_ID" --searchkey "$AZURE_KEY_CREDENTIAL" --storageaccount "$AZURE_STORAGE_ACCOUNT" --container "$AZURE_STORAGE_CONTAINER" --storagekey "$AZURE_STORAGE_KEY" --tenantid "$TTENANT_ID" -v --remove_image --remove_href > "../log/index/$FOLDER_$DATE.log"
 echo '** Done **'

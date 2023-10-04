@@ -93,7 +93,9 @@ def download(root: str):
     category_lst = find_category(soup)
     topic_lst = find_post_url(category_lst)
 
-    for post in tqdm.tqdm(topic_lst):
+    # for post in tqdm.tqdm(topic_lst, bar_format='{l_bar}{bar:30}{r_bar}{bar:-10b}'):
+    #     download_page(post)
+    for post in topic_lst:
         download_page(post)
 
 def download_page(url: str):

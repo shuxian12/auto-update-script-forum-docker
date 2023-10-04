@@ -96,8 +96,6 @@ def download_page(url: str):
     pre_queue.add(url)
     pre_url = url
     
-    if num > 5:
-        return
     if num % 50 == 0 and num != 0:
         print(f'= Has crawled {num} articles.')
         # print(f'已爬取 {num} 篇文章')
