@@ -6,7 +6,7 @@ azure-storage-blob==12.14.1
 beautifulsoup4==4.12.2
 Flask==2.3.2
 Flask_Cors==4.0.0
-langchain==0.0.276
+langchain==0.0.325
 markdown==3.4.4
 openai==0.27.8
 pypdf==3.9.0
