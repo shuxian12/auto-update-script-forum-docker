@@ -9,12 +9,12 @@ cd $SCRIPTPATH
 # start scraping forum
 echo '+--------------------------------------+'
 echo '| Start scraping forum.aim-linux.advantech.com |'
-python download_forum.py --folder 'forum/' --update > "../log/forum/$DATE.log"
+/home/advantech/anaconda3/bin/python download_forum.py --folder 'forum/' --update > "../log/forum/$DATE.log"
 
 # start scraping wiki
 echo '+--------------------------------------+'
 echo '| Start scraping wiki.aim-linux.advantech.com |'
-python download_wiki.py --folder 'wiki/' --update --url 'http://ess-wiki.advantech.com.tw/view/RISC'  > "../log/wiki/$DATE.log"
+/home/advantech/anaconda3/bin/python download_wiki.py --folder 'wiki/' --update --url 'http://ess-wiki.advantech.com.tw/view/RISC'  > "../log/wiki/$DATE.log"
 
 # start updating index
 echo '+--------------------------------------+'
