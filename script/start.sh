@@ -10,13 +10,13 @@ cd $SCRIPTPATH
 echo '+--------------------------------------+'
 echo '| Start scraping forum.aim-linux.advantech.com |'
 mkdir forum
-python download_forum.py --folder 'forum/' --new
+python3 download_forum.py --folder 'forum/' --new
 
 # start scraping wiki
 echo '+--------------------------------------+'
 echo '| Start scraping wiki.aim-linux.advantech.com |'
 mkdir wiki
-python download_wiki.py --folder 'wiki/' --new --url 'http://ess-wiki.advantech.com.tw/view/RISC' 
+python3 download_wiki.py --folder 'wiki/' --new --url 'http://ess-wiki.advantech.com.tw/view/RISC' 
 
 # start updating index
 echo '+--------------------------------------+'
