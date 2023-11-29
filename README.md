@@ -15,18 +15,18 @@
     ```sh=
     AZURE_STORAGE_ACCOUNT='stj4pwo6tino56s'
     AZURE_STORAGE_CONTAINER='forum-auto-1004'
-    AZURE_STORAGE_KEY='1Y9S/425nc9Yw4OeeTibZhfwqA+kE6eU+ybptnU/f/EdeZHGP0o22aYE2nW5VWnI6JBiRJcp28os+ASto3y2uA=='
+    AZURE_STORAGE_KEY='自己輸'
     AZURE_SEARCH_SERVICE='gptkb-j4pwo6tino56s'
     AZURE_SEARCH_INDEX='forum-auto-1004'
     AZURE_OPENAI_SERVICE='cog-j4pwo6tino56s'
-    AZURE_OPENAI_KEY='0c195ee7819c483c9970074c0f4bc965'
+    AZURE_OPENAI_KEY='自己輸'
     AZURE_OPENAI_CHATGPT_DEPLOYMENT='chat'
     AZURE_OPENAI_CHATGPT_MODEL='gpt-35-turbo'
-    AZURE_KEY_CREDENTIAL='LyzT0JrjvpbPbHmeiJuZN0TLpRZzS80kRH7ZoLX7WLAzSeBhpG5z'
+    AZURE_KEY_CREDENTIAL='自己輸'
     KB_FIELDS_CONTENT='content'
     KB_FIELDS_CATEGORY='category'
     KB_FIELDS_SOURCEFILE='sourcefile'
-    TENANT_ID='63fd068f-4e1f-4da7-a600-39ff2e7efeb5'
+    TENANT_ID='自己輸'
     ```
 3. 建立 docker image
     > 此步驟約耗費 25 分鐘
