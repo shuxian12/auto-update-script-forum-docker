@@ -1,0 +1,1 @@
+0 12 1,15 * * docker run --rm -v /home/advantech/auto-update-script-forum-docker/script:/home/auto-update-script-forum-docker/script auto-update:1

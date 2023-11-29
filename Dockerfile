@@ -11,13 +11,13 @@ RUN apt-get update \
        python3-pip \
        git \
     && apt-get clean \
-    && mkdir -p /home/auto-update-script-forum
+    && mkdir -p /home/auto-update-script-forum-docker
 
 
-COPY . /home/auto-update-script-forum
-WORKDIR /home/auto-update-script-forum
+COPY . /home/auto-update-script-forum-docker
+WORKDIR /home/auto-update-script-forum-docker
 RUN pip3 install --upgrade pip \
     && pip3 install -r requirements.txt \
-    && sh /home/auto-update-script-forum/script/start.sh
+    && sh /home/auto-update-script-forum-docker/script/start.sh
 
-CMD ["sh", "/home/auto-update-script-forum/script/auto_update.sh"]
+CMD ["sh", "/home/auto-update-script-forum-docker/script/auto_update.sh"]

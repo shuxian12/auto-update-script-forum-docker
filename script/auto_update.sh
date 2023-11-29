@@ -6,21 +6,28 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 cd $SCRIPTPATH
 
+# check if having forum and wiki folder
+if [ ! -d "data" ]; then
+    mkdir data
+    cp -r ../data/forum ./data/
+    cp -r ../data/wiki ./data
+fi
+
 # start scraping forum
 echo '+--------------------------------------+'
 echo '| Start scraping forum.aim-linux.advantech.com |'
-/home/advantech/anaconda3/bin/python download_forum.py --folder 'forum/' --update > "../log/forum/$DATE.log"
+python3 download_forum.py --folder 'data/forum/' --update > "../log/forum/$DATE.log"
 
 # start scraping wiki
 echo '+--------------------------------------+'
 echo '| Start scraping wiki.aim-linux.advantech.com |'
-/home/advantech/anaconda3/bin/python download_wiki.py --folder 'wiki/' --update --url 'http://ess-wiki.advantech.com.tw/view/RISC'  > "../log/wiki/$DATE.log"
+python3 download_wiki.py --folder 'data/wiki/' --update --url 'http://ess-wiki.advantech.com.tw/view/RISC'  > "../log/wiki/$DATE.log"
 
 # start updating index
 echo '+--------------------------------------+'
 echo '| Start updating index |'
-sh prepdocs.sh --data_path "/home/advantech/auto-update-script-forum/script/forum/"
-sh prepdocs.sh --data_path "/home/advantech/auto-update-script-forum/script/wiki/"
+sh prepdocs.sh --data_path "/home/auto-update-script-forum-docker/script/data/forum/"
+sh prepdocs.sh --data_path "/home/auto-update-script-forum-docker/script/data/wiki/"
 
 # end
 echo '+--------------------------------------+'

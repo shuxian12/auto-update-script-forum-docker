@@ -43,11 +43,11 @@ def store_webpage(url: str, html: BeautifulSoup, file_name: str, add: bool = Fal
 
     open(path + file_name + '.html', 'w', encoding='utf-8').write(UTF_8 + str(html))
     open(path + file_name + '.md', 'w', encoding='utf-8').write(convert_md(html))
-    try:
-        pdfkit.from_string(UTF_8 + str(html), path + file_name + '.pdf')
-    except:
-        print(f'!! pdfkit error: {file_name}, {url}')
-        open(f'{TARGET_PATH}error_pdfkit.txt', 'a+', encoding='utf-8').write(f'{"update/" if not add else "new/"}data/{file_name} || {url}\n')
+    # try:
+    #     pdfkit.from_string(UTF_8 + str(html), path + file_name + '.pdf')
+    # except:
+    #     print(f'!! pdfkit error: {file_name}, {url}')
+    #     open(f'{TARGET_PATH}error_pdfkit.txt', 'a+', encoding='utf-8').write(f'{"update/" if not add else "new/"}data/{file_name} || {url}\n')
     return
 
 def download_or_update(url: str, html: BeautifulSoup, file_name: str):
@@ -141,8 +141,9 @@ def create_upcoming_folder():
     os.mkdir(f'{TARGET_PATH}origin/data')
     os.mkdir(f'{TARGET_PATH}update')
     os.mkdir(f'{TARGET_PATH}new')
-    for file in ['error.txt', 'error_pdfkit.txt']:
-        open(f'{TARGET_PATH}{file}', 'w', encoding='utf-8').write('')
+    # for file in ['error.txt', 'error_pdfkit.txt']:
+    #     open(f'{TARGET_PATH}{file}', 'w', encoding='utf-8').write('')
+    open(f'{TARGET_PATH}error.txt', 'w', encoding='utf-8').write('')
     open(f'{TARGET_PATH}site_change.json', 'w', encoding='utf-8').write('{}')
     
 
@@ -246,7 +247,7 @@ if __name__ == '__main__':
     else:
         print(f'* Total {num} articles have been crawled.')
         print(f'* {len(open(f"{TARGET_PATH}error.txt", "r", encoding="utf-8").read().splitlines())} articles were failed to crawl.')
-        print(f'* PDF convertion ERROR {len(open(f"{TARGET_PATH}error_pdfkit.txt", "r", encoding="utf-8").read().splitlines())} articles.')
+        # print(f'* PDF convertion ERROR {len(open(f"{TARGET_PATH}error_pdfkit.txt", "r", encoding="utf-8").read().splitlines())} articles.')
     print('====== Completion ======')
     
 # %%
