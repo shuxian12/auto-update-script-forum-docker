@@ -8,16 +8,16 @@
     cd auto-update-script-forum-docker
     ```
 2. 在 `auto-update-script-forum-docker\` 下新增 `.env` 檔案
-    $\quad$
-    :::warning
-    請自行更改以下環境變數，如 `stroage container` 和 `search index`
-    :::
+
+    > :warning:
+    > 請自行更改以下環境變數，如 `stroage container` 和 `search index`
+    
     ```sh=
     AZURE_STORAGE_ACCOUNT='stj4pwo6tino56s'
-    AZURE_STORAGE_CONTAINER='forum-auto-1004'
+    AZURE_STORAGE_CONTAINER='自行取名'
     AZURE_STORAGE_KEY='自己輸'
     AZURE_SEARCH_SERVICE='gptkb-j4pwo6tino56s'
-    AZURE_SEARCH_INDEX='forum-auto-1004'
+    AZURE_SEARCH_INDEX='自行取名'
     AZURE_OPENAI_SERVICE='cog-j4pwo6tino56s'
     AZURE_OPENAI_KEY='自己輸'
     AZURE_OPENAI_CHATGPT_DEPLOYMENT='chat'
@@ -27,6 +27,7 @@
     KB_FIELDS_CATEGORY='category'
     KB_FIELDS_SOURCEFILE='sourcefile'
     TENANT_ID='自己輸'
+    
     ```
 3. 建立 docker image
     > 此步驟約耗費 25 分鐘
@@ -42,7 +43,7 @@
     ## auto-update   1         04d0cca9c643   9 minutes ago   514MB
     ```
 4. 將 `auto-update-doker.sh` 的內容加入到crontab排程中：
-    $\quad$
+    
     ```shell
     crontab -e
     
@@ -58,10 +59,11 @@
 5. 如果發現 docker 沒有正常更新，請根據以下步驟查看問題：
     * **create docker container**
     ```shell
-    docker run -it --rm --name debug -v /home/advantech/auto-update-script-forum-docker/script:/home/auto-update-script-forum-docker/script auto-update:1 /bin/bash
+    docker run -it --rm --name debug -v {script在本機端的絕對路徑}:/home/auto-update-script-forum-docker/script auto-update:1 /bin/bash
+    ## docker run -it --rm --name debug -v /home/advantech/auto-update-script-forum-docker/script:/home/auto-update-script-forum-docker/script auto-update:1 /bin/bash
     ```
     * 應該會出現以 root 開頭的 terminal
-        ![image](https://hackmd.io/_uploads/BJzE2_ESa.png)
+    * ![image](https://hackmd.io/_uploads/BJzE2_ESa.png)
     * 手動執行更新程式，查看錯誤
         > 此步驟約耗費 10-15 分鐘
     ```shell
