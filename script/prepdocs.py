@@ -210,7 +210,7 @@ if __name__ == "__main__":
     # Use the current user identity to connect to Azure services unless a key is explicitly set for any of them
     azd_credential = AzureDeveloperCliCredential() if args.tenantid == None else AzureDeveloperCliCredential(tenant_id=args.tenantid, process_timeout=60)
     default_creds = azd_credential if args.searchkey == None or args.storagekey == None else None
-    search_creds = default_creds if args.searchkey == None else AzureKeyCredential(args.searchkey)
+    search_creds = default_creds if args.searchkey == None else AzureKeyCredential(args.searchkey.strip())
 
     # check folder
     old_file_path_list = [f for f in os.listdir(args.files) if os.path.isdir(os.path.join(args.files, f))]

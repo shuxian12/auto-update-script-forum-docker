@@ -1,5 +1,5 @@
 FROM ubuntu:22.04
-MAINTAINER Rita "Rita.Chen@advantech.com.tw"
+LABEL MAINTAINER="Rita.Chen@advantech.com.tw"
 
 ENV  LANG="C.UTF-8"
 
