@@ -4,8 +4,8 @@
 
 1. Clone repository
     ```shell
-    git clone https://adv-iedge@dev.azure.com/adv-iedge/AI/_git/AIM-Linux-Forum-auto-update-script-docker
-    cd AIM-Linux-Forum-auto-update-script-forum-docker
+    git clone https://github.com/shuxian12/auto-update-script-forum-docker.git
+    cd auto-update-script-forum-docker
     ```
 2. 在 `auto-update-script-forum-docker\` 下新增 `.env` 檔案
 
