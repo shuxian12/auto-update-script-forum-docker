@@ -165,3 +165,5 @@ cython_debug/
 forum/
 wiki/
 log
+script/prepdocs_2.py
+script/arg.json

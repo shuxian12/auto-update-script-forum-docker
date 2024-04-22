@@ -1,5 +1,5 @@
 FROM ubuntu:22.04
-MAINTAINER Rita "Rita.Chen@advantech.com.tw"
+LABEL MAINTAINER="Rita.Chen@advantech.com.tw"
 
 ENV  LANG="C.UTF-8"
 
@@ -18,6 +18,10 @@ COPY . /home/auto-update-script-forum-docker
 WORKDIR /home/auto-update-script-forum-docker
 RUN pip3 install --upgrade pip \
     && pip3 install -r requirements.txt \
+    && mkdir -p /home/auto-update-script-forum-docker/log \
+    && mkdir -p /home/auto-update-script-forum-docker/log/forum \
+    && mkdir -p /home/auto-update-script-forum-docker/log/index \
+    && mkdir -p /home/auto-update-script-forum-docker/log/wiki \
     && sh /home/auto-update-script-forum-docker/script/start.sh
-
+	
 CMD ["sh", "/home/auto-update-script-forum-docker/script/auto_update.sh"]

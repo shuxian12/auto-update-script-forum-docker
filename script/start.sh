@@ -17,7 +17,7 @@ python3 download_forum.py --folder '../data/forum/' --new
 echo '+--------------------------------------+'
 echo '| Start scraping wiki.aim-linux.advantech.com |'
 mkdir ../data/wiki
-python3 download_wiki.py --folder '../data/wiki/' --new --url 'http://ess-wiki.advantech.com.tw/view/RISC' 
+python3 download_wiki.py --folder '../data/wiki/' --new --url 'http://ess-wiki.advantech.com.tw/view/RISC'
 
 # start updating index
 echo '+--------------------------------------+'

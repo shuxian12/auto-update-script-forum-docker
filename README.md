@@ -4,14 +4,15 @@
 
 1. Clone repository
     ```shell
-    git clone https://github.com/shuxian12/auto-update-script-forum-docker.git
-    cd auto-update-script-forum-docker
+    git clone https://adv-iedge@dev.azure.com/adv-iedge/AI/_git/AIM-Linux-Forum-auto-update-script-docker
+    cd AIM-Linux-Forum-auto-update-script-forum-docker
     ```
-2. 在 `auto-update-script-forum-docker\` 下新增 `.env` 檔案
+2. 在 `AIM-Linux-Forum-auto-update-script-forum-docker\` 下新增 `.env` 檔案
     $\quad$
     :::warning
-    請自行更改以下環境變數，如 `stroage container` 和 `search index`
-    :::
+    請自行更改以下環境變數，如 `stroage container` 和 `search index`會新標記名稱，較好追蹤:::
+    > AZURE_STORAGE_KEY、AZURE_OPENAI_KEY、AZURE_KEY_CREDENTIAL，可在Azure->資源群組->rg-test2->forum-mail-test->組態中查詢
+    
     ```sh=
     AZURE_STORAGE_ACCOUNT='stj4pwo6tino56s'
     AZURE_STORAGE_CONTAINER='forum-auto-1004'
@@ -32,14 +33,14 @@
     > 此步驟約耗費 25 分鐘
     ```shell
     docker pull ubuntu:22.04
-    docker build -t auto-update:1 . 
+    docker build -t aim-linux-forum-auto-update:1 . 
     ## image名稱可自行改變-> IMAGE名稱:TAG
     
     ## 確認image建立成功
     docker images
     ## REPOSITORY 和 TAG 有出現以下內容即成功建立
     ## REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
-    ## auto-update   1         04d0cca9c643   9 minutes ago   514MB
+    ## aim-linux-forum-auto-update   1         04d0cca9c643   9 minutes ago   514MB
     ```
 4. 將 `auto-update-doker.sh` 的內容加入到crontab排程中：
     $\quad$
@@ -48,8 +49,8 @@
     
     ## 會自動打開 vim 編輯器
     ## 到檔案最後一行，加入排程
-    0 12 1,15 * * docker run --rm -v {script在本機端的絕對路徑}:/home/auto-update-script-forum-docker/script auto-update:1
-    ## 如 /home/advantech/auto-update-script-forum-docker/script:/home/auto-update-script-forum-docker/script   
+    0 12 1,15 * * docker run --rm -v {script在本機端的絕對路徑}:/home/auto-update-script-forum-docker/script aim-linux-forum-auto-update:1
+    ## 如 /home/adv/AIM-Linux-Forum-auto-update-script-forum-docker/script:/home/auto-update-script-forum-docker/script   
     ```
     > 初一十五會自動執行 docker 並更新資料
     > 當首次更新完成後，資料就會儲存在 `script/data` 中
@@ -58,7 +59,7 @@
 5. 如果發現 docker 沒有正常更新，請根據以下步驟查看問題：
     * **create docker container**
     ```shell
-    docker run -it --rm --name debug -v /home/advantech/auto-update-script-forum-docker/script:/home/auto-update-script-forum-docker/script auto-update:1 /bin/bash
+    docker run -it --rm --name debug -v /home/adv/AIM-Linux-Forum-auto-update-script-docker/script:/home/auto-update-script-forum-docker/script aim-linux-forum-auto-update:1 /bin/bash
     ```
     * 應該會出現以 root 開頭的 terminal
         ![image](https://hackmd.io/_uploads/BJzE2_ESa.png)
@@ -80,3 +81,7 @@
 
 ## 問題參考
 * [invoke-rc.d: could not determine current runlevel](https://github.com/microsoft/WSL/issues/2702)
+* [Error: EACCES: premisson denied](https://blog.csdn.net/watson2017/article/details/123418720)
+```
+sudo chown -R adv /home/adv/AIM-Linux-Forum-auto-update-script-docker
+```

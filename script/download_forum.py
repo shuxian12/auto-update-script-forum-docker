@@ -20,6 +20,8 @@ def convert_md(soup: BeautifulSoup):
     n.name = 'b'
     # idx = post_list[0].find('span', itemprop='position')
     c = post_list[0].find('div', class_='post', itemprop='articleBody')
+    if not c:
+        c = post_list[0].find('div', class_='post', itemprop='text')
     # docs.append({'name': n.text.strip(), 'idx': (int)(idx.text.strip()), 'content': c.text.strip()})
     s.extend([n, c])
 
